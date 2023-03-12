@@ -1,11 +1,13 @@
 import Artwork from "../components/Artwork";
-import Navbar from "../components/Navbar";
+import AddArtwork from "../components/AddArtwork";
 
 
 
 const Home = () => {
   return (
     <div>
+
+      <AddArtwork />
    <Artwork />
    </div>
   );

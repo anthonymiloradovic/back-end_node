@@ -22,6 +22,8 @@ module.exports = {
   },
   
 
+  
+
   // Récupérer toutes les oeuvres d'art
   getAllArtworks: async (req, res) => {
     try {
