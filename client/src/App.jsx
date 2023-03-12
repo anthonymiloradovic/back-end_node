@@ -1,41 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import RegistrationForm from './components/RegistrationForm'
-
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import RegistrationForm from './components/RegistrationForm';
+import Login from './components/Login';
+import Logout from './components/Logout';
+import Navbar from './components/Navbar';
+import './styles/index.scss';
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('token') ? true : false);
 
-  const [artworks, setArtworks] = useState([]);
-
-useEffect(() => {
-  const fetchData = async () => {
-    const result = await axios.get('http://localhost:5000/artworks');
-    setArtworks(result.data);
-  };
-  fetchData();
-}, []);
-
-
-
-    return (
-      <div>
-        <RegistrationForm />
-        {artworks.map(artwork => (
-          <div key={artwork._id}>
-            <h2>{artwork.title}</h2>
-            <p>{artwork.artist}</p>
-            <p>{artwork.content}</p>
-            <img src={artwork.image} alt="Artwork" />
-            <p>{artwork.price}</p>
-            <p>{artwork.category}</p>
-          </div>
-        ))}
-      </div>
-    );
-
-
+  return (
+    <BrowserRouter>
+      <Navbar isLoggedIn={isLoggedIn} handleLogout={() => setIsLoggedIn(false)} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/logout" element={<Logout handleLogout={() => setIsLoggedIn(false)} />} />
+        <Route path="/signup" element={<RegistrationForm />} />
+        <Route path="/login" element={<Login handleLogin={setIsLoggedIn} />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-
-
-export default App
+export default App;

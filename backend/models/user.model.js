@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema({
   seller_description: { type: String },
   seller_email: { type: String },
   seller_phone: { type: String },
+  token: { type: String },
+  lastLogin: { type: Date },
+  isLoggedIn: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('User', userSchema);

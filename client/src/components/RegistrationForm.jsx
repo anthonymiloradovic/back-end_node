@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function RegistrationForm() {
@@ -11,7 +11,26 @@ function RegistrationForm() {
   const [sellerPhone, setSellerPhone] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [emailAvailable, setEmailAvailable] = useState(true);
 
+  const checkEmailAvailability = async (email) => {
+    try {
+      if (email) {
+        const response = await axios.get(`http://localhost:5000/users/email/${email}`);
+        setEmailAvailable(response.data.available);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    if (email) {
+      checkEmailAvailability(email);
+    }
+  }, [email]);
+  
+
+  
   const handleSubmit = async e => {
     e.preventDefault();
     try {
@@ -33,95 +52,106 @@ function RegistrationForm() {
       setSellerDescription('');
       setSellerEmail('');
       setSellerPhone('');
+      window.location.href = '/'; 
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {submitted && <div>{successMessage}</div>}
-      <div>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          name="email"
-          id="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
+    <section className="form-section">
+      <div className="form-box">
+        <div className="form-value">
+          <form onSubmit={handleSubmit}>
+            {submitted && <div>{successMessage}</div>}
+            <div className="inputbox">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => checkEmailAvailability(email)}
+                required
+              />
+              <label htmlFor="email">Email</label>
+              {!emailAvailable && (
+                <p className="error-message">L'adresse e-mail est déjà utilisée.</p>
+              )}
+            </div>
+            <div className="inputbox">
+              <input
+                type="password"
+                name="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <label htmlFor="password">Password</label>
+            </div>
+            <div className="inputbox">
+              <input
+                type="text"
+                name="name"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+              <label htmlFor="name">Name</label>
+            </div>
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                name="seller"
+                id="seller"
+                checked={seller}
+                onChange={(e) => setSeller(e.target.checked)}
+              />
+              <label htmlFor="seller">Seller</label>
+            </div>
+            {seller && (
+              <>
+                <div className="inputbox">
+                  <input
+                    type="text"
+                    name="sellerDescription"
+                    id="sellerDescription"
+                    value={sellerDescription}
+                    onChange={(e) => setSellerDescription(e.target.value)}
+                  />
+                  <label htmlFor="sellerDescription">Seller description</label>
+                </div>
+                <div className="inputbox">
+                  <input
+                    type="email"
+                    name="sellerEmail"
+                    id="sellerEmail"
+                    value={sellerEmail}
+                    onChange={(e) => setSellerEmail(e.target.value)}
+                  />
+                  <label htmlFor="sellerEmail">Seller email</label>
+                </div>
+                <div className="inputbox">
+                  <input
+                    type="tel"
+                    name="sellerPhone"
+                    id="sellerPhone"
+                    value={sellerPhone}
+                    onChange={(e) => setSellerPhone(e.target.value)}
+                  />
+                  <label htmlFor="sellerPhone">Seller phone</label>
+                </div>
+              </>
+            )}
+            <button type="submit">Sign up</button>
+          </form>
+        </div>
       </div>
-      <div>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="name">Name:</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="seller">Seller:</label>
-        <input
-          type="checkbox"
-          name="seller"
-          id="seller"
-          checked={seller}
-          onChange={e => setSeller(e.target.checked)}
-        />
-      </div>
-      {seller && (
-        <>
-          <div>
-            <label htmlFor="sellerDescription">Seller description:</label>
-            <input
-              type="text"
-              name="sellerDescription"
-              id="sellerDescription"
-              value={sellerDescription}
-              onChange={e => setSellerDescription(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="sellerEmail">Seller email:</label>
-            <input
-              type="email"
-              name="sellerEmail"
-              id="sellerEmail"
-              value={sellerEmail}
-              onChange={e => setSellerEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="sellerPhone">Seller phone:</label>
-            <input
-              type="tel"
-              name="sellerPhone"
-              id="sellerPhone"
-              value={sellerPhone}
-              onChange={e => setSellerPhone(e.target.value)}
-
-            />
-          </div>
-        </>
-      )}
-      <button type="submit">Sign up</button>
-    </form>
+    </section>
   );
+  
 }
 
 export default RegistrationForm;
