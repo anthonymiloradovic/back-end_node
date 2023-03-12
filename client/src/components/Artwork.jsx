@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Flex, Text, Image, Badge } from '@chakra-ui/react';
 
+
 const Artwork = () => {
   const [artworks, setArtworks] = useState([]);
 
@@ -24,7 +25,12 @@ const Artwork = () => {
           p="4"
           mb="4"
         >
-          <Image src={artwork.image} alt="Artwork" mb="4" />
+          <Image
+            src={artwork.image}
+            alt="Artwork"
+            mb="4"
+            className="artwork-image" // Ajout de la classe CSS
+          />
           <Text fontSize="xl" fontWeight="bold">
             {artwork.title}
           </Text>
